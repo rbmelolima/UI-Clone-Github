@@ -25,7 +25,6 @@ interface Props {
   blog?: string;
 }
 
-
 const ProfileData: React.FC<Props> = ({
   username,
   name,

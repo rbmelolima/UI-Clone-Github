@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+
 import {
   Container,
   Main,
@@ -13,14 +15,58 @@ import {
 import ProfileData from '../../components/ProfileData';
 import RepoCard from '../../components/RepoCard';
 import RandomCalendar from '../../components/RandomCalendar';
+import IUser from '../../models/IUser';
+import IRepo from '../../models/IRepo';
+
+interface Data {
+  user?: IUser;
+  repos?: IRepo[];
+  error?: string;
+}
 
 const Profile: React.FC = () => {
+  const { username = 'rbmelolima' } = useParams();
+  const [ data, setData ] = useState<Data>();
+
+  useEffect(() => {
+    Promise.all([
+      fetch(`https://api.github.com/users/${ username }`),
+      fetch(`https://api.github.com/users/${ username }/repos`),
+    ]).then(async responses => {
+      const [ userResponse, reposResponse ] = responses;
+
+      if(userResponse.status === 404) {
+        setData({ error: 'User not found' });
+        return;
+      }
+
+      const user = await userResponse.json();
+      const repos = await reposResponse.json();
+
+      const shuffledRepos = repos.sort(() => 0.50 - Math.random());
+      const slicedRepos = shuffledRepos.slice(0, 6);
+
+      setData({
+        user,
+        repos: slicedRepos
+      });
+    });
+  }, [ username ]);
+
+  if(data?.error) {
+    return <h1>{ data.error }</h1>;
+  }
+
+  if(!data?.user || !data?.repos) {
+    return <h1>loading...</h1>;
+  }
+
   const TabContent = () => {
     return (
       <div className="content">
         <RepoIcon />
         <span className="label">Repositories</span>
-        <span className="number">35</span>
+        <span className="number">{ data.user?.public_repos }</span>
       </div>
     );
   };
@@ -39,15 +85,15 @@ const Profile: React.FC = () => {
       <Main>
         <LeftSide>
           <ProfileData
-            username={ 'rbmelolima' }
-            name={ 'Roger Bernardo de Melo Lima' }
-            avatarUrl={ 'https://avatars3.githubusercontent.com/u/48859060?s=460&u=2c3bdd59585c0ed134934d2ab50e025c4932141d&v=4' }
-            followers={ 23 }
-            following={ 35 }
-            company={ 'JTP Solution' }
-            location={ 'São Vicente, São Paulo, Brasil' }
-            email={ 'rbmelolima@gmail.com' }
-            blog={ 'http://www.rbmelolima.com.br/' }
+            username={ data.user.login }
+            name={ data.user.name }
+            avatarUrl={ data.user.avatar_url }
+            followers={ data.user.followers }
+            following={ data.user.following }
+            company={ data.user.company }
+            location={ data.user.location }
+            email={ data.user.email }
+            blog={ data.user.blog }
           />
         </LeftSide>
 
@@ -61,15 +107,15 @@ const Profile: React.FC = () => {
             <h2>Random repositories</h2>
 
             <div>
-              { [ 1, 2, 3, 4, 5, 6 ].map(n => (
+              { data.repos.map(item => (
                 <RepoCard
-                  key={ n }
-                  username={ 'rbmelolima' }
-                  reponame={ 'UI-Clone-Github' }
-                  description={ 'Recriando a interface do github com React.js' }
-                  language={ n % 3 === 0 ? 'Javascript' : 'Typescript' }
-                  stars={ 8 }
-                  forks={ 8 }
+                  key={ item.id }
+                  username={ item.owner.login }
+                  reponame={ item.name }
+                  description={ item.description }
+                  language={ item.language }
+                  stars={ item.stargazers_count }
+                  forks={ item.forks_count }
                 />
               )) }
             </div>
