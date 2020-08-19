@@ -1,12 +1,11 @@
 import React from 'react';
-
 import {
   Container,
   Main,
   LeftSide,
   RightSide,
   Repos,
-  CalendarHeading,  
+  CalendarHeading,
   Tab,
   RepoIcon
 } from './styles';
@@ -28,6 +27,15 @@ const Profile: React.FC = () => {
 
   return (
     <Container>
+      <Tab className="desktop">
+        <div className="wrapper">
+          <span className="offset"></span>
+          <TabContent />
+        </div>
+        <span className="line"></span>
+      </Tab>
+
+
       <Main>
         <LeftSide>
           <ProfileData

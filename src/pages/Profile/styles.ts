@@ -4,7 +4,7 @@ import { RiBookMarkLine } from 'react-icons/ri';
 export const Container = styled.div`
   --horizontalPadding: 16px;
   --verticalPadding: 24px;
-  overflow: hidden;
+  overflow: hidden;  
 
   padding: var(--verticalPadding) var(--horizontalPadding);
 `;
@@ -12,6 +12,8 @@ export const Container = styled.div`
 export const Main = styled.div`
   display: flex;
   flex-direction: column;
+  max-width: 1280px;
+  margin: 0 auto;
 
   @media (min-width: 768px){
     flex-direction: row;
@@ -19,7 +21,7 @@ export const Main = styled.div`
 `;
 
 export const LeftSide = styled.div`
-  padding: 0 var(--horizontalPadding);
+  padding: 4px var(--horizontalPadding);
 
   @media (min-width: 768px){
     width: 25%;
@@ -27,7 +29,7 @@ export const LeftSide = styled.div`
 `;
 
 export const RightSide = styled.div`
-  padding: 0 var(--horizontalPadding);
+  padding: 4px var(--horizontalPadding);
 
   @media (min-width: 768px){
     width: 75%;
@@ -97,6 +99,29 @@ export const Tab = styled.div`
 
     .content{
       margin: 0 auto;
+    }
+
+    @media (min-width: 768px){
+      display: none;
+    }
+  }
+
+  &.desktop {
+    display: none;
+
+    @media (min-width: 768px){
+      display: unset;
+
+      .wrapper{
+        display: flex;
+        margin: 0 auto;
+        max-width: 1280px;
+      }
+
+      .offset {
+        width: 25%;
+        margin-right: var(--horizontalPadding);
+      }
     }
   }
 `;
