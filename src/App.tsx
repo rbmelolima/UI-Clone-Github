@@ -30,6 +30,7 @@ function App() {
           element={ <Repository /> }
         />
       </Routes>
+      
       <Footer />
 
       <GlobalStyles />
